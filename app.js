@@ -8,6 +8,7 @@ const gameMode = document.querySelectorAll('.gameMode');
 player = {speed:5}
 keys = {ArrowUp:false, ArrowDown:false, ArrowRight:false, ArrowLeft:false}
 mode = {Hard:false, Medium:false, Easy:true}
+currentMode = 'Easy';
 
 document.addEventListener("keydown", (e)=>{
     e.preventDefault();
@@ -27,7 +28,7 @@ function modeChange(){
         mode[elem] = false;
     });
     mode[this.innerText] = true;
-    console.log(mode);
+    currentMode = this.innerText;
 }
 
 const animLines = () =>{
@@ -50,7 +51,7 @@ const carCollide = (a, b) =>{
 const endGame = () =>{
     let highscores = localStorage.getItem("highscores");
     if(highscores==null){
-        highscores = [0];
+        highscores = {Hard:0,Medium:0,Easy:0};
     }else{
         highscores = JSON.parse(highscores);
     }
@@ -61,8 +62,8 @@ const endGame = () =>{
     gameMode.forEach(elem=>{
         elem.classList.remove('hide');
     })
-    if(player.score>highscores){
-        highscores[0]=player.score
+    if(player.score>highscores[currentMode]){
+        highscores[currentMode] = player.score
     }
     localStorage.setItem("highscores", JSON.stringify(highscores));
 }
@@ -87,7 +88,7 @@ const enemyCar = (car) =>{
 const gamePlay = () =>{
     let highscores = localStorage.getItem("highscores");
     if(highscores==null){
-        highscores = [0];
+        highscores = {Hard:0,Medium:0,Easy:0};
     }else{
         highscores = JSON.parse(highscores);
     }
@@ -103,10 +104,9 @@ const gamePlay = () =>{
         if((keys.ArrowRight || keys.d) && player.x < (dimensions.width-cardem.width-20)){player.x += player.speed;}
         car.style.top = player.y + "px";
         car.style.left = player.x + "px";
-        console.log(dimensions, cardem);
         window.requestAnimationFrame(gamePlay);
         player.score++;
-        console.log(player.speed);
+
         if(mode.Hard){
             player.speed += 0.01;
         }else if(mode.Medium){
@@ -114,16 +114,16 @@ const gamePlay = () =>{
         }else if(mode.Easy){
             player.speed += 0;
         }
-        if(highscores[0]==0){
+        if(highscores[currentMode] == 0){
             score.innerHTML = `Score: ${player.score-1}`
         }else{
-            score.innerHTML = `Score: ${player.score-1}<br>Highest Score: ${highscores[0]}`
+            score.innerHTML = `Score: ${player.score-1}<br>Highest Score: ${highscores[currentMode]}`
         }
     }else{
-        if(highscores[0]==0){
+        if(highscores[currentMode]== 0){
             score.innerHTML = `Game Over!<br>Your Score was ${player.score-1}`;
         }else{
-            score.innerHTML = `Game Over!<br>Your Score was ${player.score-1}<br>Highest Score: ${highscores[0]}`;
+            score.innerHTML = `Game Over!<br>Your Score was ${player.score-1}<br>Highest Score: ${highscores[currentMode]}`;
         }
     }
 }
