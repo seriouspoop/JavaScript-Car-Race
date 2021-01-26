@@ -58,7 +58,9 @@ const endGame = () =>{
     player.speed = 5;
     startScreen.innerHTML = `Game Over <br> Your Final Score is ${player.score} <br> press here to restart the game.`
     startScreen.classList.remove('hide');
-    modeDiv.classList.remove('hide');
+    gameMode.forEach(elem=>{
+        elem.classList.remove('hide');
+    })
     if(player.score>highscores){
         highscores[0]=player.score
     }
@@ -128,7 +130,11 @@ const gamePlay = () =>{
 
 const start = () =>{
     startScreen.classList.add('hide');
-    modeDiv.classList.add('hide')
+    gameMode.forEach(elem=>{
+        if(!elem.classList.contains('activated')){
+            elem.classList.add('hide');
+        }
+    })
     gameArea.innerHTML = "";
     player.start = true;
     player.score = 0;
