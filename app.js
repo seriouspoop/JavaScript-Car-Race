@@ -1,10 +1,13 @@
 const startScreen = document.querySelector('.startScreen');
 const gameArea = document.querySelector('.gameArea');
 const score = document.querySelector('.score');
+const modeDiv = document.querySelector('.modeDiv');
+const gameMode = document.querySelectorAll('.gameMode');
 
 
 player = {speed:5}
 keys = {ArrowUp:false, ArrowDown:false, ArrowRight:false, ArrowLeft:false}
+mode = {Hard:false, Medium:false, Easy:true}
 
 document.addEventListener("keydown", (e)=>{
     e.preventDefault();
@@ -14,6 +17,18 @@ document.addEventListener("keyup", (e)=>{
     e.preventDefault();
     keys[e.key] = false;
 })
+
+function modeChange(){
+    gameMode.forEach(elem=>{
+        elem.classList.remove('activated')
+    })
+    this.classList.add('activated');
+    ['Hard', 'Medium', 'Easy'].forEach(elem=>{
+        mode[elem] = false;
+    });
+    mode[this.innerText] = true;
+    console.log(mode);
+}
 
 const animLines = () =>{
     let lines = document.querySelectorAll(".lines");
@@ -43,6 +58,7 @@ const endGame = () =>{
     player.speed = 5;
     startScreen.innerHTML = `Game Over <br> Your Final Score is ${player.score} <br> press here to restart the game.`
     startScreen.classList.remove('hide');
+    modeDiv.classList.remove('hide');
     if(player.score>highscores){
         highscores[0]=player.score
     }
@@ -88,7 +104,14 @@ const gamePlay = () =>{
         console.log(dimensions, cardem);
         window.requestAnimationFrame(gamePlay);
         player.score++;
-        player.speed += 0.001;
+        console.log(player.speed);
+        if(mode.Hard){
+            player.speed += 0.01;
+        }else if(mode.Medium){
+            player.speed += 0.001;
+        }else if(mode.Easy){
+            player.speed += 0;
+        }
         if(highscores[0]==0){
             score.innerHTML = `Score: ${player.score-1}`
         }else{
@@ -105,6 +128,7 @@ const gamePlay = () =>{
 
 const start = () =>{
     startScreen.classList.add('hide');
+    modeDiv.classList.add('hide')
     gameArea.innerHTML = "";
     player.start = true;
     player.score = 0;
@@ -133,3 +157,6 @@ const start = () =>{
 }
 
 startScreen.addEventListener("click", start);
+gameMode.forEach(elem=>{
+    elem.addEventListener("click", modeChange);
+});
