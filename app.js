@@ -3,7 +3,6 @@ const gameArea = document.querySelector('.gameArea');
 const score = document.querySelector('.score');
 const modeDiv = document.querySelector('.modeDiv');
 const gameMode = document.querySelectorAll('.gameMode');
-console.log("hello");
 
 
 player = {speed:5}
